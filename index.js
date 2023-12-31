@@ -6,7 +6,6 @@ const login = require("./routes/login");
 const stripeRoute = require("./routes/stripe");
 const productsRoute = require("./routes/products");
 const bodyParser = require('body-parser');
-const products = require("./products");
 const users = require("./routes/users")
 const orders = require("./routes/orders")
 
@@ -16,26 +15,24 @@ const nodemailer = require("nodemailer");
 const app = express();
 require("dotenv").config();
 
-const port = process.env.PORT || 5000;
+const port = `5000`;
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:3000' }));
+
+app.use(cors());
+
 
 app.use("/api/register", register);
 app.use("/api/login", login);
-app.use("/api/stripe", stripeRoute); // updated route variable name
+app.use("/api/stripe", stripeRoute);
 app.use("/api/products", productsRoute);
 app.use("/api/users", users);
 app.use("/api/orders", orders);
 
 app.get("/", (req, res) => {
   res.send("Welcome to our online shop API...");
-});
-
-app.get("/products", (req, res) => {
-  res.send(products);
 });
 
 const uri = process.env.DB_URI;
@@ -48,18 +45,17 @@ mongoose
   .then(() => console.log("MongoDB connection established..."))
   .catch((error) => console.error("MongoDB connection failed:", error.message));
 
-// Email configuration for nodemailer
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'iammanikandan.mannai@gmail.com', // replace with your email
-    pass: 'bzra qhpy qqwm faqv' // replace with your email password
+    user: 'iammanikandan.mannai@gmail.com',
+    pass: 'bzra qhpy qqwm faqv'
   }
 });
 
 app.set('transporter', transporter);
 
-// Route to send OTP
+
 app.post("/api/send-otp", async (req, res) => {
   const { toMail, otp } = req.body;
 
@@ -79,6 +75,6 @@ app.post("/api/send-otp", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
+app.listen(5000, () => {
   console.log(`Server running on port: ${port}...`);
 });
